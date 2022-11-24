@@ -4,7 +4,8 @@ This repository has the solution by Raghuram for the assessment provided in here
 ## 1.Data Pipeline loading CSV file to Database 
 
 **Architecture for Data pipeline**
-![This is an image](R:\Big Data Engineer\Interview\emesa\Git\raghu-emesa-assessment\images\Architecture_datapipeline)
+![Architecture_datapipeline](https://user-images.githubusercontent.com/42775479/203854451-a9dabc7a-4321-4771-bbdb-fc2543e63524.jpg)
+
 
 **Steps in Datapipeline**
 - Upload a csv file to specific path in s3. i.e., s3://emesa-data-bucket/curz/files/transaction/
@@ -19,4 +20,4 @@ This repository has the solution by Raghuram for the assessment provided in here
 ## 2.Build and deploy an API-endpoint to query the data
 
 **API Endpoint Architecture**
-![This is an image](R:\Big Data Engineer\Interview\emesa\Git\raghu-emesa-assessment\images\Architecture_Api)
+![Architecture_Api](https://user-images.githubusercontent.com/42775479/203854482-cd00cc29-e177-4806-837c-73757959efce.png)
