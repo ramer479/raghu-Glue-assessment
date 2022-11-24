@@ -23,3 +23,5 @@ This repository has the solution by Raghuram for the assessment provided in here
 **API Endpoint Architecture**
 
 ![Architecture_Api](https://user-images.githubusercontent.com/42775479/203854482-cd00cc29-e177-4806-837c-73757959efce.png)
+
+https://yl41ngmlg4.execute-api.us-east-1.amazonaws.com/dev/transactions?numRecords=25
