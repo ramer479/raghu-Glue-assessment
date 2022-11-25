@@ -31,4 +31,21 @@ This repository has the solution by Raghuram for the assessment provided in here
 
 ![Architecture_Api](https://user-images.githubusercontent.com/42775479/203854482-cd00cc29-e177-4806-837c-73757959efce.png)
 
-https://yl41ngmlg4.execute-api.us-east-1.amazonaws.com/dev/transactions?numRecords=25
+**API URL** 
+https://yl41ngmlg4.execute-api.us-east-1.amazonaws.com/dev/transactions?select=*&numRecords=50
+
+**API Features added**
+- API Gateway
+  * An API is created with GET method
+  * Setup Query string to query
+  * Associate the API to Lambda in backend
+- Lambda 
+  * Lambda function takes parameter "numRecords" Integer value - this determines number of records you want to see
+    * Example - numRecords= 10
+  * Lambda function takes parameter "select" String value - this determines columns you want to query
+    * Example - select=order_id,source
+  * Based on input value. API reponds with data
+
+
+**Snippets**
+- Snippets are added to the : https://github.com/ramer479/raghu-emesa-assessment/tree/main/images/Datapipeline Flow
