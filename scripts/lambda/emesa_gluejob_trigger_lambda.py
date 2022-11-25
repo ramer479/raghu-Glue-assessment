@@ -8,9 +8,11 @@ glue_client = boto3.client('glue')
 sns_client = boto3.client('sns')
 
 def trigger_glue_job(job_nm):
+    """Triggers Glue job with Job name passed in the parameter"""
     response = glue_client.start_job_run(
         JobName=job_nm
         )
+    logger.info("Glue Job is triggered Successfully")
     return response
 
       
@@ -20,19 +22,20 @@ def send_sns(job_status):
         TopicArn='arn:aws:sns:us-east-1:811144540482:job-sns',
         Message=job_status
         )
+    logger.info("SNS is triggered Successfully with Job Status")
     return response
 
 def lambda_handler(event, context):
-    print(event)
     logger.info("Initiated by s3 Event")
+    
+    # Opening the config.json. which has job name and environment 
     with open('config.json') as file_cfg:
         conf_variables = json.loads(file_cfg.read())
-        
         job_nm = conf_variables.get("job_name")
         env = conf_variables.get("env")
         s3_bucket = event['Records'][0]['s3']['bucket']['name']
         s3_key = event['Records'][0]['s3']['object']['key']
-        print(f"variables are {job_nm}, {env}, {s3_bucket}, {s3_key}")
+        logger.info(f"variables are job_nm: {job_nm}, env: {env}, s3_bucket: {s3_bucket},s3_key: {s3_key}")
         #Send SNS for Job Scheduling
         send_sns(f"S3 Event notification received by Lambda. \nJobName is {job_nm}")
         glue_response = trigger_glue_job(job_nm)

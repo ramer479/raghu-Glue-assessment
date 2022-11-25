@@ -51,7 +51,9 @@ def get_rds_conn(user_name, password, host_name, port):
 def lambda_handler(event, context):
     # Get number of records
     record_count = int(event['queryStringParameters']['numRecords'])
-    logger.info(f"The record count input given is {record_count}")
+    select_cols = event['queryStringParameters']['select']
+    logger.info(f"The record count provided in input is {record_count}")
+    logger.info(f"The select columns provided in input are: {select_cols}")
     
     # Get RDS credentials from secret
     SECRET = get_secret()
@@ -64,8 +66,11 @@ def lambda_handler(event, context):
     # Get Rds connection and execute the cursor to fetch records from fact_transact table according to records size
     conn = get_rds_conn(RDS_USER, RDS_PASSWORD, RDS_HOST, RDS_PORT)
     cur = conn.cursor()
-    if record_count > 0:
-        cur.execute(f"select * from myproject.fact_transact limit {record_count}")
+    if record_count > 0 and len(select_cols) > 0:
+        logger.info(f"The Query is: select {select_cols} from myproject.fact_transact limit {record_count}")
+        cur.execute(f"select {select_cols} from myproject.fact_transact limit {record_count}")
+    elif record_count <= 0 and len(select_cols) > 0:
+        cur.execute(f"select {select_cols} from myproject.fact_transact")
     else:
         cur.execute(f"select * from myproject.fact_transact")
     records = cur.fetchall()
@@ -82,7 +87,7 @@ def lambda_handler(event, context):
     for rec in records:
         record_dict = {}
         for i in range(len(schema_tuple)-1):
-            for j in range(len(rec)-1):
+            for j in range(len(rec)):
                 if i == j:
                     record_dict[schema_tuple[i][0]] = rec[j]
         output_list.append(record_dict)

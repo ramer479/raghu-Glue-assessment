@@ -12,16 +12,16 @@ from pyspark.sql import functions as F
 
 import boto3
 from botocore.exceptions import ClientError
+import logging
 
 ## @params: [JOB_NAME]
 args = getResolvedOptions(sys.argv, [
     'JOB_NAME'
 ])
 
-# ENVRN = args['env']
-# S3_BUCKET_NAME = args['s3_bucket']
-# S3_KEY = args['key']
+# ENVRN = args['env'], S3_BUCKET_NAME = args['s3_bucket'], S3_KEY = args['key']
 
+# Set spark context, Spark session 
 sc = SparkContext()
 sc.setLogLevel("ERROR")
 glueContext = GlueContext(sc)
@@ -29,6 +29,9 @@ spark = SparkSession.builder.appName("EmesaScenario").getOrCreate()
 job = Job(glueContext)
 job.init(args['JOB_NAME'], args)
 
+# Get logger and sns boto3 client
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 sns_client = boto3.client("sns")
 
 
@@ -62,24 +65,16 @@ def get_secret():
     else:
         if 'SecretString' in get_secret_value_response:
             secret = get_secret_value_response['SecretString']
+            logger.info("Secret is retrieved from secrets Manager")
         else:
             decoded_binary_secret = base64.b64decode(get_secret_value_response['SecretBinary'])
     return secret
-
-
-def get_rds_conn(user_name, password, host_name, port):
-    """This method is to establish a RDS connection with necessary parameters. This method returns RDS connection"""
-    rds_conn = pymysql.connect(
-        host=host_name,
-        user=user_name,
-        password=password,
-        port=port
-        )
-    return rds_conn
+ 
     
 def import_data():
     """This method takes data and applies schema on top of it and returns a Dataframe"""
     data_path = "s3://emesa-data-bucket/curz/data/sample.csv"
+    logger.info(f"the data path is : {data_path}")
     data_schema = StructType([ \
         StructField("order_id",LongType(),False), \
         StructField("source",StringType(),True), \
@@ -99,6 +94,7 @@ def import_data():
                    .option("header","True")\
                    .option("schema",data_schema)\
                    .load(data_path)
+    logger.info(f"Dataframe is successfully created. Sample records below")
     df.show(truncate=False)
     return df 
 
@@ -106,12 +102,14 @@ def export_data(df,user_name, password, host_name, port):
     """This method establishes a JDBC connection to RDS and Writes the source data to target table in Aurora mysql"""
     url = "jdbc:mysql://"+host_name+"/"+"myproject"
     df_transform = df.withColumn("load_dtm",F.current_timestamp())
+    logger.info(f"Timestamp is added to the Dataframe")
     df_transform.write.format('jdbc').options(
       url=url,
       driver='com.mysql.jdbc.Driver',
       dbtable='fact_transact',
       user=user_name,
       password=password).mode('overwrite').save()
+    logger.info(f"Dataframe is written to RDS successfully")
       
       
 def send_sns(job_status):
@@ -120,6 +118,7 @@ def send_sns(job_status):
         TopicArn='arn:aws:sns:us-east-1:811144540482:job-sns',
         Message=job_status
         )
+    logger.info(f"SNS is sent successfully {response}")
     return response
     
 class DataLoadException(Exception):
@@ -134,14 +133,6 @@ if __name__ == "__main__":
     RDS_PORT = SECRET.get('port')
     
     print (f"DEBUG# RDS_USER = {RDS_USER} \n RDS_HOST = {RDS_HOST}")
-    
-    # test Block to see the connection established ###########################
-    conn = get_rds_conn(RDS_USER, RDS_PASSWORD, RDS_HOST, RDS_PORT)
-    cur = conn.cursor()
-    cur.execute("SELECT VERSION()")
-    version = cur.fetchone()
-    print("Database version: {} ".format(version[0]))
-    # test Block to see the connection established ###########################
     
     # Calling import data method for getting source dataframe from CSV 
     source_df = import_data()
