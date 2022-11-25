@@ -1,4 +1,4 @@
-# raghu-emesa-assessment
+# emesa-assessment by Raghuram Sistla
 This repository has the solution by Raghuram for the assessment provided in here. https://github.com/EmesaDEV/data-engineer-assignment
 
 ## 1.Data Pipeline loading CSV file to Database 
