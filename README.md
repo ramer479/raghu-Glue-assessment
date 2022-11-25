@@ -25,6 +25,11 @@ This repository has the solution by Raghuram for the assessment provided in here
 **Snippets**
 - Snippets are added to the : https://github.com/ramer479/raghu-emesa-assessment/tree/main/images/Datapipeline Flow
 
+**Features I would like to Add in Data pipeline**
+- Set up an RDS for metadata , where Primary key is the s3 bucket and key. Metadata has cols such as - glue_job_name, target_database, target_table, glue_arguments
+- Based on RDS key, we can extract the above parameters and Automate the glue job for *ANY FILE*
+- AWS Cloudformation template for all resources used
+
 ## 2.Build and deploy an API-endpoint to query the data
 
 **API Endpoint Architecture**
@@ -42,10 +47,18 @@ https://yl41ngmlg4.execute-api.us-east-1.amazonaws.com/dev/transactions?select=*
 - Lambda 
   * Lambda function takes parameter "numRecords" Integer value - this determines number of records you want to see
     * Example - numRecords= 10
-  * Lambda function takes parameter "select" String value - this determines columns you want to query
-    * Example - select=order_id,source
   * Based on input value. API reponds with data
+  
+  https://yl41ngmlg4.execute-api.us-east-1.amazonaws.com/dev/transactions?numRecords=2
+  
+  ![image](https://user-images.githubusercontent.com/42775479/203927670-b2c256bf-10b7-4e90-a4b0-582fa086030b.png)
+
 
 
 **Snippets**
-- Snippets are added to the : https://github.com/ramer479/raghu-emesa-assessment/tree/main/images/Datapipeline Flow
+- Snippets are added to the : https://github.com/ramer479/raghu-emesa-assessment/tree/main/images/API
+
+**Features I would like to Add in API**
+- Feature to select columns and Filter columns
+- PUT method to insert records 
+- POST method to delete/update records and get response
