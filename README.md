@@ -11,12 +11,12 @@ This repository has the solution for the assessment provided in here. https://gi
 **DataPipeline Features added**
 - S3
   * A CSV file Uploaded to specific path in s3. i.e., "s3://emesa-data-bucket/curz/files/transaction/" creates an an Event based trigger
-  * This action triggers the Lambda emesa-glue-trigger
-- Lambda 
+  * This action triggers the Lambda "emesa_gluejob_trigger_lambda.py"
+- Lambda - [git link](https://github.com/ramer479/raghu-emesa-assessment/blob/main/scripts/lambda/emesa_gluejob_trigger_lambda.py)
   * Lambda function takes the Job name parameters from the JSON config file "config.json"
   * Based on extracted job paramter, Lambda function triggers the Glue job
   * Lambda triggers an **SNS** to notify that job is being triggered
-- Glue
+- Glue - [git link](https://github.com/ramer479/raghu-emesa-assessment/blob/main/scripts/glue/emesa_glue_transaction_job.py)
   * Glue job picks the RDS credentials from the Secrets manager
   * A pyspark script is written to pick the dataframe from particular location and insert data into Amazon RDS MySQL
   * An **SNS** is triggered with Job Status [*success/Fail*]
@@ -46,9 +46,10 @@ https://yl41ngmlg4.execute-api.us-east-1.amazonaws.com/dev/transactions?numRecor
   * An API is created with GET method
   * Setup Query string to query
   * Associate the API to Lambda in backend
-- Lambda 
+- Lambda [git link](https://github.com/ramer479/raghu-emesa-assessment/blob/main/scripts/lambda/emesa_getrecords_api_lambda.py)
   * Lambda function takes parameter "numRecords" Integer value - this determines number of records you want to see
     * Example - numRecords= 10
+  * Lambda picks the credentials from secret manager and connects with RDS in backend
   * Based on input value. API reponds with data
   
   https://yl41ngmlg4.execute-api.us-east-1.amazonaws.com/dev/transactions?numRecords=2
