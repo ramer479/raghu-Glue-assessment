@@ -26,9 +26,11 @@ This repository has the solution for the assessment provided in here. https://gi
 - Snippets are added to the : https://github.com/ramer479/raghu-emesa-assessment/tree/main/images/Datapipeline Flow
 
 **Features I would like to Add in Data pipeline**
-- Set up an RDS for metadata , where Primary key is the s3 bucket and key. Metadata has cols such as - glue_job_name, target_database, target_table, glue_arguments
-- Based on RDS key, we can extract the above parameters and Automate the glue job for *ANY FILE*
-- AWS Cloudformation template for all resources used
+- *Automate this file based Glue trigger for Any File* 
+- Set up an RDS for metadata , where Primary key is the s3 bucket and key. 
+  * Metadata has cols such as - glue_job_name, target_database, target_table, glue_arguments. Based on RDS key, we can extract the parameters and pass on to the Glue Job
+- *AWS Cloudformation template* or terraform for all resources
+- Tightened Permission groups for security
 
 ## 2.Build and deploy an API-endpoint to query the data
 
@@ -37,7 +39,7 @@ This repository has the solution for the assessment provided in here. https://gi
 ![Architecture_Api](https://user-images.githubusercontent.com/42775479/203854482-cd00cc29-e177-4806-837c-73757959efce.png)
 
 **API URL** 
-https://yl41ngmlg4.execute-api.us-east-1.amazonaws.com/dev/transactions?select=*&numRecords=50
+https://yl41ngmlg4.execute-api.us-east-1.amazonaws.com/dev/transactions?numRecords=50
 
 **API Features added**
 - API Gateway
@@ -52,7 +54,6 @@ https://yl41ngmlg4.execute-api.us-east-1.amazonaws.com/dev/transactions?select=*
   https://yl41ngmlg4.execute-api.us-east-1.amazonaws.com/dev/transactions?numRecords=2
   
   ![image](https://user-images.githubusercontent.com/42775479/203927670-b2c256bf-10b7-4e90-a4b0-582fa086030b.png)
-
 
 
 **Snippets**
